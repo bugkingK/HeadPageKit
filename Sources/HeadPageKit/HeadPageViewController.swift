@@ -405,6 +405,17 @@ open class HeadPageViewController: UIViewController {
             delegate?.pageController(self, didDisplay: viewController, forItemAt: index)
         }
     }
+    
+    /// All ScrollView contentOffset to .zero
+    public func allScrollViewScrollToTop() {
+        containViews.forEach {
+            let vc = $0.viewController
+            let scrollView = vc?.headPageChildScrollView()
+            scrollView?.contentOffset = .zero
+        }
+        
+        mainScrollView.contentOffset = .zero
+    }
 }
 
 
