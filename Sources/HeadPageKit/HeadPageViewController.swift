@@ -9,6 +9,8 @@ import UIKit
 
 open class HeadPageViewController: UIViewController {
     
+    @IBOutlet private(set) weak var sourceView: UIView?
+    
     public private(set) var currentViewController: (UIViewController & HeadPageChildViewController)?
     public private(set) var currentIndex = 0
     internal var originIndex = 0
@@ -90,6 +92,10 @@ open class HeadPageViewController: UIViewController {
     }
     
     internal func obtainDataSource() {
+        if let value = dataSource?.sourceViewFor(self) {
+            sourceView = value
+        }
+        
         if let value = dataSource?.originIndexFor(self) {
             originIndex = value
         }
@@ -115,6 +121,7 @@ open class HeadPageViewController: UIViewController {
     }
     
     private func setupOriginContent() {
+        guard let sourceView = self.sourceView == nil ? view : self.sourceView else { return }
         mainScrollView.headerViewHeight = headerViewHeight
         mainScrollView.menuViewHeight = menuViewHeight
         if #available(iOS 13.0, *) {
@@ -124,26 +131,31 @@ open class HeadPageViewController: UIViewController {
         }
         
         var mainScrollViewTop: NSLayoutYAxisAnchor = topLayoutGuide.bottomAnchor
+        if sourceView != view {
+            mainScrollViewTop = sourceView.topAnchor
+        }
+        sourceView.addSubview(mainScrollView)
+        
         if let navigationView: UIView = dataSource?.navigationViewFor(self),
            let navigationViewHeight: CGFloat = dataSource?.navigationViewHeightFor(self) {
             mainScrollViewTop = navigationView.bottomAnchor
-            view.addSubview(navigationView)
+            sourceView.addSubview(navigationView)
             navigationView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 navigationView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
-                navigationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                navigationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                navigationView.leadingAnchor.constraint(equalTo: sourceView.leadingAnchor),
+                navigationView.trailingAnchor.constraint(equalTo: sourceView.trailingAnchor),
                 navigationView.heightAnchor.constraint(equalToConstant: navigationViewHeight)
             ])
         }
         
-        view.addSubview(mainScrollView)
+        sourceView.addSubview(mainScrollView)
         let contentInset = dataSource?.contentInsetFor(self) ?? .zero
         let constraints = [
             mainScrollView.topAnchor.constraint(equalTo: mainScrollViewTop, constant: contentInset.top),
-            mainScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: contentInset.left),
-            mainScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -contentInset.bottom),
-            mainScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -contentInset.right)
+            mainScrollView.leadingAnchor.constraint(equalTo: sourceView.leadingAnchor, constant: contentInset.left),
+            mainScrollView.bottomAnchor.constraint(equalTo: sourceView.bottomAnchor, constant: -contentInset.bottom),
+            mainScrollView.trailingAnchor.constraint(equalTo: sourceView.trailingAnchor, constant: -contentInset.right)
         ]
         mainScrollViewConstraints = constraints
         NSLayoutConstraint.activate(constraints)

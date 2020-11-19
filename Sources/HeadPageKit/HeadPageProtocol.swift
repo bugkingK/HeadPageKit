@@ -8,6 +8,7 @@
 import UIKit
 
 public protocol HeadPageControllerDataSource: class {
+    func sourceViewFor(_ pageController: HeadPageViewController) -> UIView?
     func numberOfViewControllers(in pageController: HeadPageViewController) -> Int
     func pageController(_ pageController: HeadPageViewController, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController)
     func headerViewFor(_ pageController: HeadPageViewController) -> UIView?
@@ -29,6 +30,7 @@ public protocol HeadPageControllerDataSource: class {
 }
 
 extension HeadPageControllerDataSource {
+    public func sourceViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
     public func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat { return 0 }
     public func navigationViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
     public func navigationViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat { return 0 }
