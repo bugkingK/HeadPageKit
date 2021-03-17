@@ -261,7 +261,7 @@ open class HeadPageViewController: UIViewController {
 
         if let navigationView: UIView = dataSource?.navigationViewFor(self),
            let navigationViewHeight: CGFloat = dataSource?.navigationViewHeightFor(self),
-           let sourceView = sourceView {
+           let sourceView = self.sourceView == nil ? view : self.sourceView {
             let headerContentViewHeight = navigationView.heightAnchor.constraint(equalToConstant: navigationViewHeight)
             navigationViewConstraint = headerContentViewHeight
             mainScrollViewTop = navigationView.bottomAnchor
