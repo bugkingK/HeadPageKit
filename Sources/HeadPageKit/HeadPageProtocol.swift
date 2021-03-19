@@ -32,6 +32,8 @@ extension HeadPageControllerDataSource {
     public func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat { return 0 }
     public func originIndexFor(_ pageController: HeadPageViewController) -> Int { return 0 }
     public func contentInsetFor(_ pageController: HeadPageViewController) -> UIEdgeInsets { return .zero }
+    public func headerViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
+    public func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? { return nil }
 }
 
 public protocol HeadPageControllerDelegate: class {
