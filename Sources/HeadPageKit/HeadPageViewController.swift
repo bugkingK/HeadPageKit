@@ -134,20 +134,6 @@ open class HeadPageViewController: UIViewController {
         if sourceView != view {
             mainScrollViewTop = sourceView.topAnchor
         }
-        sourceView.addSubview(mainScrollView)
-
-        if let navigationView: UIView = dataSource?.navigationViewFor(self),
-           let navigationViewHeight: CGFloat = dataSource?.navigationViewHeightFor(self) {
-            mainScrollViewTop = navigationView.bottomAnchor
-            sourceView.addSubview(navigationView)
-            navigationView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                navigationView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
-                navigationView.leadingAnchor.constraint(equalTo: sourceView.leadingAnchor),
-                navigationView.trailingAnchor.constraint(equalTo: sourceView.trailingAnchor),
-                navigationView.heightAnchor.constraint(equalToConstant: navigationViewHeight)
-            ])
-        }
 
         sourceView.addSubview(mainScrollView)
         let contentInset = dataSource?.contentInsetFor(self) ?? .zero
@@ -160,18 +146,19 @@ open class HeadPageViewController: UIViewController {
         mainScrollViewConstraints = constraints
         NSLayoutConstraint.activate(constraints)
 
-
         mainScrollView.addSubview(headerContentView)
         headerContentView.translatesAutoresizingMaskIntoConstraints = false
 
-        let headerContentViewHeight = headerContentView.heightAnchor.constraint(equalToConstant: headerViewHeight)
-        headerViewConstraint = headerContentViewHeight
-        NSLayoutConstraint.activate([
-            headerContentView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
-            headerContentView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
-            headerContentView.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
-            headerContentViewHeight,
-        ])
+        if headerViewHeight > 0 {
+            let headerContentViewHeight = headerContentView.heightAnchor.constraint(equalToConstant: headerViewHeight)
+            headerViewConstraint = headerContentViewHeight
+            NSLayoutConstraint.activate([
+                headerContentView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
+                headerContentView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
+                headerContentView.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
+                headerContentViewHeight,
+            ])
+        }
 
         mainScrollView.addSubview(menuContentView)
         menuContentView.translatesAutoresizingMaskIntoConstraints = false
@@ -182,10 +169,9 @@ open class HeadPageViewController: UIViewController {
             menuContentView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
             menuContentView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
             menuContentView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
-            menuContentView.topAnchor.constraint(equalTo: headerContentView.bottomAnchor),
+            menuContentView.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: headerViewHeight),
             menuContentViewHeight
         ])
-
 
         mainScrollView.addSubview(contentScrollView)
 
