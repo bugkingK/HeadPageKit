@@ -16,9 +16,7 @@ public protocol HeadPageControllerDataSource: class {
     func menuViewFor(_ pageController: HeadPageViewController) -> UIView?
     func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
     func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat
-    func navigationViewFor(_ pageController: HeadPageViewController) -> UIView?
-    func navigationViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat
-    
+
     /// The index of the controller displayed by default. You should have menview ready before setting this value
     ///
     /// - Parameter pageController: HeadPageViewController
@@ -32,8 +30,6 @@ public protocol HeadPageControllerDataSource: class {
 extension HeadPageControllerDataSource {
     public func sourceViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
     public func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat { return 0 }
-    public func navigationViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
-    public func navigationViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat { return 0 }
     public func originIndexFor(_ pageController: HeadPageViewController) -> Int { return 0 }
     public func contentInsetFor(_ pageController: HeadPageViewController) -> UIEdgeInsets { return .zero }
 }

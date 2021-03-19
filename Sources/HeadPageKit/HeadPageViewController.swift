@@ -134,20 +134,6 @@ open class HeadPageViewController: UIViewController {
         if sourceView != view {
             mainScrollViewTop = sourceView.topAnchor
         }
-        sourceView.addSubview(mainScrollView)
-
-        if let navigationView: UIView = dataSource?.navigationViewFor(self),
-           let navigationViewHeight: CGFloat = dataSource?.navigationViewHeightFor(self) {
-            mainScrollViewTop = navigationView.bottomAnchor
-            sourceView.addSubview(navigationView)
-            navigationView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                navigationView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
-                navigationView.leadingAnchor.constraint(equalTo: sourceView.leadingAnchor),
-                navigationView.trailingAnchor.constraint(equalTo: sourceView.trailingAnchor),
-                navigationView.heightAnchor.constraint(equalToConstant: navigationViewHeight)
-            ])
-        }
 
         sourceView.addSubview(mainScrollView)
         let contentInset = dataSource?.contentInsetFor(self) ?? .zero
