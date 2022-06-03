@@ -249,7 +249,7 @@ open class HeadPageViewController: UIViewController {
     internal func clearMemoryCache() {
         countArray.forEach { (index) in
             let viewController = memoryCache[index] as? (UIViewController & HeadPageChildViewController)
-            let scrollView = viewController?.headPageChildScrollView()
+            let scrollView = viewController?.childScrollView
             scrollView?.am_originOffset = nil
         }
         memoryCache.removeAllObjects()
@@ -327,7 +327,7 @@ open class HeadPageViewController: UIViewController {
         targetViewController.view.layoutSubviews()
         containView.viewController = targetViewController
 
-        let scrollView = targetViewController.headPageChildScrollView()
+        let scrollView = targetViewController.childScrollView
         scrollView.am_originOffset = scrollView.contentOffset
 
         if mainScrollView.contentOffset.y < sillValue {
@@ -387,7 +387,7 @@ open class HeadPageViewController: UIViewController {
         }
         let containView = containViews[index]
         currentViewController = containView.viewController
-        currentChildScrollView = currentViewController?.headPageChildScrollView()
+        currentChildScrollView = currentViewController?.childScrollView
         currentIndex = index
 
         childScrollViewObservation?.invalidate()
@@ -408,7 +408,7 @@ open class HeadPageViewController: UIViewController {
     public func allScrollViewScrollToTop() {
         containViews.forEach {
             let vc = $0.viewController
-            let scrollView = vc?.headPageChildScrollView()
+            let scrollView = vc?.childScrollView
             scrollView?.contentOffset = .zero
         }
 

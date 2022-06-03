@@ -8,6 +8,6 @@
 import UIKit
 
 public protocol HeadPageChildViewController where Self: UIViewController {
-    func headPageChildScrollView() -> UIScrollView
+    var childScrollView: UIScrollView { get }
 }
 
