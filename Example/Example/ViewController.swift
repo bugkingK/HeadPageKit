@@ -16,7 +16,7 @@ class ViewController: HeadPageViewController {
         .createInstance(bg: .green),
     ]
     
-    let menuView: TridentMenuView = .init(parts:
+    let menuView: MenuView = .init(parts:
         .normalTextColor(.darkText),
         .normalTextFont(UIFont.systemFont(ofSize: 17)),
         .selectedTextColor(.red),
@@ -47,7 +47,7 @@ extension ViewController: HeadPageViewControllerDataSource {
         return controllers[index]
     }
 
-    func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & HeadPageMenuItemProtocol)? {
+    func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & MenuViewProtocol)? {
         return menuView
     }
 

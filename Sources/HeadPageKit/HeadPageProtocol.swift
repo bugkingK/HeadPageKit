@@ -17,7 +17,7 @@ public protocol HeadPageViewControllerDataSource: AnyObject {
     func pageController(_ pageController: HeadPageViewController, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController)
     func headerViewFor(_ pageController: HeadPageViewController) -> UIView?
     func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
-    func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & HeadPageMenuItemProtocol)?
+    func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & MenuViewProtocol)?
     func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
     func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat
 
@@ -99,7 +99,7 @@ public protocol HeadPageViewControllerDelegate: AnyObject {
     ///   - isAdsorption: is adsorption
     func pageController(_ pageController: HeadPageViewController, menuView isAdsorption: Bool)
     
-    func pageController(_ pageController: HeadPageViewController, menuView: TridentMenuView, didSelectedItemAt index: Int)
+    func pageController(_ pageController: HeadPageViewController, menuView: MenuView, didSelectedItemAt index: Int)
 }
 
 extension HeadPageViewControllerDelegate {
@@ -110,5 +110,5 @@ extension HeadPageViewControllerDelegate {
     public func pageController(_ pageController: HeadPageViewController, willDisplay viewController: (UIViewController & HeadPageChildViewController), forItemAt index: Int) { }
     public func pageController(_ pageController: HeadPageViewController, didDisplay viewController: (UIViewController & HeadPageChildViewController), forItemAt index: Int) { }
     public func pageController(_ pageController: HeadPageViewController, menuView isAdsorption: Bool) { }
-    public func pageController(_ pageController: HeadPageViewController, menuView: TridentMenuView, didSelectedItemAt index: Int) { }
+    public func pageController(_ pageController: HeadPageViewController, menuView: MenuView, didSelectedItemAt index: Int) { }
 }

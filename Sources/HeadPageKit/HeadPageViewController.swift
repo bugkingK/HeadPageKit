@@ -46,7 +46,7 @@ open class HeadPageViewController: UIViewController {
         return stackView
     }()
     
-    internal var menuView: (UIView & HeadPageMenuItemProtocol)?
+    internal var menuView: (UIView & MenuViewProtocol)?
 
     private var contentScrollViewConstraint: NSLayoutConstraint?
     private var menuViewConstraint: NSLayoutConstraint?
@@ -409,7 +409,7 @@ open class HeadPageViewController: UIViewController {
         childScrollViewObservation = keyValueObservation
 
         if let viewController = containView.viewController {
-            menuView?.checkState(animation: true)
+            menuView?.didDisplay(true)
             delegate?.pageController(self, didDisplay: viewController, forItemAt: index)
         }
     }
@@ -427,8 +427,8 @@ open class HeadPageViewController: UIViewController {
 }
 
 
-extension HeadPageViewController: TridentMenuViewDelegate {
-    public func menuView(_ menuView: TridentMenuView, didSelectedItemAt index: Int) {
+extension HeadPageViewController: MenuViewDelegate {
+    public func menuView(_ menuView: MenuView, didSelectedItemAt index: Int) {
         setSelect(index: index, animation: true)
         delegate?.pageController(self, menuView: menuView, didSelectedItemAt: index)
     }

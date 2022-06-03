@@ -24,17 +24,19 @@ public enum MenuSwitchStyle {
     case telescopic
 }
 
-public protocol HeadPageMenuItemProtocol: AnyObject {
-    var delegate: TridentMenuViewDelegate? { get set }
-    func updateLayout(_ externalScrollView: UIScrollView)
-    func checkState(animation: Bool)
+public protocol MenuViewProtocol: AnyObject {
+    var delegate: MenuViewDelegate? { get set }
+    /// Any offset changes in pageController's contentScrollView
+    func contentScrollViewDidScroll(_ scrollView: UIScrollView)
+    /// Method call when pageController did display
+    func didDisplay(_ animation: Bool)
 }
 
-public protocol TridentMenuViewDelegate: AnyObject {
-    func menuView(_ menuView: TridentMenuView, didSelectedItemAt index: Int)
+public protocol MenuViewDelegate: AnyObject {
+    func menuView(_ menuView: MenuView, didSelectedItemAt index: Int)
 }
 
-public class TridentMenuView: UIView, HeadPageMenuItemProtocol {
+public class MenuView: UIView, MenuViewProtocol {
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -72,7 +74,7 @@ public class TridentMenuView: UIView, HeadPageMenuItemProtocol {
         return view
     }()
     private var menuItemViews = [MenuItemView]()
-    public weak var delegate: TridentMenuViewDelegate?
+    public weak var delegate: MenuViewDelegate?
     
     private var normalTextFont = UIFont.systemFont(ofSize: 15.0)
     private var selectedTextFont = UIFont.systemFont(ofSize: 15, weight: .medium)
@@ -187,7 +189,7 @@ public class TridentMenuView: UIView, HeadPageMenuItemProtocol {
             sliderWidth?.constant = progressWidth
             sliderCenterX?.constant = offset
             
-            checkState(animation: false)
+            didDisplay(false)
         }
     }
     
@@ -326,25 +328,24 @@ public class TridentMenuView: UIView, HeadPageMenuItemProtocol {
         delegate?.menuView(self, didSelectedItemAt: index)
     }
     
-    
-    public func updateLayout(_ externalScrollView: UIScrollView) {
+    public func contentScrollViewDidScroll(_ scrollView: UIScrollView) {
         guard currentIndex >= 0, currentIndex < titles.count else {
             return
         }
-        let scrollViewWidth = externalScrollView.bounds.width
-        let offsetX = externalScrollView.contentOffset.x
+        let scrollViewWidth = scrollView.bounds.width
+        let offsetX = scrollView.contentOffset.x
         let index = Int(offsetX / scrollViewWidth)
         guard index >= 0, index < titles.count else {
             return
         }
         
         currentIndex = index
-        let value: CGFloat = offsetX > CGFloat(titles.count - 1) * externalScrollView.bounds.width ? -1 : 1
+        let value: CGFloat = offsetX > CGFloat(titles.count - 1) * scrollView.bounds.width ? -1 : 1
         scrollRate = value * (offsetX - CGFloat(currentIndex) * scrollViewWidth) / scrollViewWidth
         layoutSlider(scrollRate)
     }
     
-    public func checkState(animation: Bool) {
+    public func didDisplay(_ animation: Bool) {
         guard currentIndex >= 0
             , currentIndex < titles.count else {
             return

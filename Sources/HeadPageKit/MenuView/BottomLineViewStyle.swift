@@ -5,7 +5,6 @@
 //  Created by Kimun Kwon on 2020/10/26.
 //
 
-import Foundation
 import UIKit
 
 public enum BottomLineStyle {
@@ -13,7 +12,6 @@ public enum BottomLineStyle {
     case height(CGFloat)
     case hidden(Bool)
 }
-
 
 public class BottomLineViewStyle {
     
