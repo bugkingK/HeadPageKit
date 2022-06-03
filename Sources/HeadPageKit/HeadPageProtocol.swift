@@ -7,7 +7,11 @@
 
 import UIKit
 
-public protocol HeadPageControllerDataSource: class {
+public protocol HeadPageViewControllerDataSource: class {
+    /// You can set up the View where the HeadPage is created. default is the View of the HeadPageView Controller.
+    ///
+    /// - Parameter pageController: HeadPageViewController
+    /// - Returns: UIView?
     func sourceViewFor(_ pageController: HeadPageViewController) -> UIView?
     func numberOfViewControllers(in pageController: HeadPageViewController) -> Int
     func pageController(_ pageController: HeadPageViewController, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController)
@@ -27,7 +31,7 @@ public protocol HeadPageControllerDataSource: class {
     func contentInsetFor(_ pageController: HeadPageViewController) -> UIEdgeInsets
 }
 
-extension HeadPageControllerDataSource {
+extension HeadPageViewControllerDataSource {
     public func sourceViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
     public func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat { return 0 }
     public func originIndexFor(_ pageController: HeadPageViewController) -> Int { return 0 }
@@ -36,7 +40,7 @@ extension HeadPageControllerDataSource {
     public func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? { return nil }
 }
 
-public protocol HeadPageControllerDelegate: class {
+public protocol HeadPageViewControllerDelegate: class {
     
     /// Any offset changes in pageController's mainScrollView
     ///
@@ -97,7 +101,7 @@ public protocol HeadPageControllerDelegate: class {
     
 }
 
-extension HeadPageControllerDelegate {
+extension HeadPageViewControllerDelegate {
     public func pageController(_ pageController: HeadPageViewController, mainScrollViewDidScroll scrollView: UIScrollView) { }
     public func pageController(_ pageController: HeadPageViewController, contentScrollViewDidEndScroll scrollView: UIScrollView) { }
     public func pageController(_ pageController: HeadPageViewController, contentScrollViewDidScroll scrollView: UIScrollView) { }

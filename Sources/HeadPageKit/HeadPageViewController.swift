@@ -65,18 +65,23 @@ open class HeadPageViewController: UIViewController {
     internal var isAdsorption: Bool = false
 
     private let memoryCache = NSCache<NSString, UIViewController>()
-    public weak var dataSource: HeadPageControllerDataSource?
-    public weak var delegate: HeadPageControllerDelegate?
+    public weak var dataSource: HeadPageViewControllerDataSource? {
+        didSet { loadData(isUpdated: false) }
+    }
+    public weak var delegate: HeadPageViewControllerDelegate?
 
     open override var shouldAutomaticallyForwardAppearanceMethods: Bool {
         return false
     }
 
-    open override func viewDidLoad() {
-        super.viewDidLoad()
-
+    func loadData(isUpdated: Bool) {
         obtainDataSource()
-        setupOriginContent()
+        if isUpdated {
+            updateOriginContent()
+        } else {
+            setupOriginContent()
+        }
+        
         setupDataSource()
         view.layoutIfNeeded()
         if originIndex > 0 {

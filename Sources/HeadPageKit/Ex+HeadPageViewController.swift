@@ -57,16 +57,7 @@ extension HeadPageViewController {
     public func reloadData() {
         mainScrollView.isUserInteractionEnabled = false
         clear()
-        obtainDataSource()
-        updateOriginContent()
-        setupDataSource()
-        view.layoutIfNeeded()
-        if originIndex > 0 {
-            setSelect(index: originIndex, animation: false)
-        } else {
-            showChildViewContoller(at: originIndex)
-            didDisplayViewController(at: originIndex)
-        }
+        loadData(isUpdated: true)
         mainScrollView.isUserInteractionEnabled = true
     }
 }
