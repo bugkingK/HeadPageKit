@@ -123,7 +123,11 @@ open class HeadPageViewController: UIViewController {
             childControllerCount = value
         }
 
-        sillValue = headerViewHeight - menuViewPinHeight
+        if headerViewHeight >= menuViewPinHeight {
+            sillValue = headerViewHeight - menuViewPinHeight
+        } else {
+            fatalError("The height of the headerView must be greater than the height of the menuView Pin.")
+        }
         countArray = Array(stride(from: 0, to: childControllerCount, by: 1))
     }
 
@@ -156,7 +160,7 @@ open class HeadPageViewController: UIViewController {
         mainScrollView.addSubview(headerContentView)
         headerContentView.translatesAutoresizingMaskIntoConstraints = false
 
-        if headerViewHeight > 0 {
+//        if headerViewHeight > 0 {
             let headerContentViewHeight = headerContentView.heightAnchor.constraint(equalToConstant: headerViewHeight)
             headerViewConstraint = headerContentViewHeight
             NSLayoutConstraint.activate([
@@ -165,7 +169,7 @@ open class HeadPageViewController: UIViewController {
                 headerContentView.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
                 headerContentViewHeight,
             ])
-        }
+//        }
 
         mainScrollView.addSubview(menuContentView)
         menuContentView.translatesAutoresizingMaskIntoConstraints = false
@@ -339,10 +343,11 @@ open class HeadPageViewController: UIViewController {
         let scrollView = targetViewController.childScrollView
         scrollView.am_originOffset = scrollView.contentOffset
 
-        if mainScrollView.contentOffset.y < sillValue {
+        if mainScrollView.contentOffset.y <= sillValue {
             scrollView.contentOffset = scrollView.am_originOffset ?? .zero
-            scrollView.am_isCanScroll = false
-            mainScrollView.am_isCanScroll = true
+            let isCanScroll = sillValue == 0
+            scrollView.am_isCanScroll = isCanScroll
+            mainScrollView.am_isCanScroll = !isCanScroll
         }
     }
 

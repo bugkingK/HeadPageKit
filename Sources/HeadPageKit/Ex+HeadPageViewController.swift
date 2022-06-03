@@ -71,9 +71,16 @@ extension HeadPageViewController: UIScrollViewDelegate {
             delegate?.pageController(self, mainScrollViewDidScroll: scrollView)
             let offsetY = scrollView.contentOffset.y
             if offsetY >= sillValue {
+                let isSillValueZero = sillValue == 0
                 scrollView.contentOffset = CGPoint(x: 0, y: sillValue)
-                currentChildScrollView?.am_isCanScroll = true
-                scrollView.am_isCanScroll = false
+                if isSillValueZero {
+                    currentChildScrollView?.am_isCanScroll = isSillValueZero
+                    scrollView.am_isCanScroll = !isSillValueZero
+                } else {
+                    currentChildScrollView?.am_isCanScroll = true
+                    scrollView.am_isCanScroll = false
+                }
+                
                 isAdsorption = !scrollView.am_isCanScroll
                 delegate?.pageController(self, menuView: isAdsorption)
             } else {
@@ -138,9 +145,15 @@ extension HeadPageViewController {
         }
         let offsetY = scrollView.contentOffset.y
         if offsetY <= (scrollView.am_originOffset ?? .zero).y {
+            let isSillValueZero = sillValue == 0
             scrollView.contentOffset = scrollView.am_originOffset ?? .zero
-            scrollView.am_isCanScroll = false
-            mainScrollView.am_isCanScroll = true
+            if isSillValueZero {
+                scrollView.am_isCanScroll = isSillValueZero
+                mainScrollView.am_isCanScroll = !isSillValueZero
+            } else {
+                scrollView.am_isCanScroll = false
+                mainScrollView.am_isCanScroll = true
+            }
         }
     }
 }

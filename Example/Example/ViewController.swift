@@ -54,5 +54,19 @@ extension ViewController: HeadPageViewControllerDataSource {
     func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? {
         return 50
     }
+    
+    func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat {
+        return 0
+    }
+    
+    func headerViewFor(_ pageController: HeadPageViewController) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = .brown
+        return view
+    }
+    
+    func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? {
+        return 20
+    }
 }
 
