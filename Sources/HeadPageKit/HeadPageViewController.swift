@@ -45,6 +45,8 @@ open class HeadPageViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    internal var menuView: (UIView & HeadPageMenuItemProtocol)?
 
     private var contentScrollViewConstraint: NSLayoutConstraint?
     private var menuViewConstraint: NSLayoutConstraint?
@@ -273,7 +275,9 @@ open class HeadPageViewController: UIViewController {
             headerView.topAnchor.constraint(equalTo: headerContentView.topAnchor)
             ])
 
-        let menuView = dataSource?.menuViewFor(self) ?? .init()
+        let menuView = dataSource?.menuViewFor(self) ?? EmptyMenuView()
+        menuView.delegate = self
+        self.menuView = menuView
         menuContentView.addSubview(menuView)
         menuView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -405,6 +409,7 @@ open class HeadPageViewController: UIViewController {
         childScrollViewObservation = keyValueObservation
 
         if let viewController = containView.viewController {
+            menuView?.checkState(animation: true)
             delegate?.pageController(self, didDisplay: viewController, forItemAt: index)
         }
     }
@@ -422,3 +427,9 @@ open class HeadPageViewController: UIViewController {
 }
 
 
+extension HeadPageViewController: TridentMenuViewDelegate {
+    public func menuView(_ menuView: TridentMenuView, didSelectedItemAt index: Int) {
+        setSelect(index: index, animation: true)
+        delegate?.pageController(self, menuView: menuView, didSelectedItemAt: index)
+    }
+}

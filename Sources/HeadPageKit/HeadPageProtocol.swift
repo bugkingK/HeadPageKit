@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HeadPageViewControllerDataSource: class {
+public protocol HeadPageViewControllerDataSource: AnyObject {
     /// You can set up the View where the HeadPage is created. default is the View of the HeadPageView Controller.
     ///
     /// - Parameter pageController: HeadPageViewController
@@ -17,7 +17,7 @@ public protocol HeadPageViewControllerDataSource: class {
     func pageController(_ pageController: HeadPageViewController, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController)
     func headerViewFor(_ pageController: HeadPageViewController) -> UIView?
     func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
-    func menuViewFor(_ pageController: HeadPageViewController) -> UIView?
+    func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & HeadPageMenuItemProtocol)?
     func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
     func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat
 
@@ -40,7 +40,7 @@ extension HeadPageViewControllerDataSource {
     public func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? { return nil }
 }
 
-public protocol HeadPageViewControllerDelegate: class {
+public protocol HeadPageViewControllerDelegate: AnyObject {
     
     /// Any offset changes in pageController's mainScrollView
     ///
@@ -99,6 +99,7 @@ public protocol HeadPageViewControllerDelegate: class {
     ///   - isAdsorption: is adsorption
     func pageController(_ pageController: HeadPageViewController, menuView isAdsorption: Bool)
     
+    func pageController(_ pageController: HeadPageViewController, menuView: TridentMenuView, didSelectedItemAt index: Int)
 }
 
 extension HeadPageViewControllerDelegate {
@@ -109,4 +110,5 @@ extension HeadPageViewControllerDelegate {
     public func pageController(_ pageController: HeadPageViewController, willDisplay viewController: (UIViewController & HeadPageChildViewController), forItemAt index: Int) { }
     public func pageController(_ pageController: HeadPageViewController, didDisplay viewController: (UIViewController & HeadPageChildViewController), forItemAt index: Int) { }
     public func pageController(_ pageController: HeadPageViewController, menuView isAdsorption: Bool) { }
+    public func pageController(_ pageController: HeadPageViewController, menuView: TridentMenuView, didSelectedItemAt index: Int) { }
 }

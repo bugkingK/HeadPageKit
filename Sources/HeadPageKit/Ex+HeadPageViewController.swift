@@ -86,6 +86,7 @@ extension HeadPageViewController: UIScrollViewDelegate {
                 }
             }
         } else {
+            menuView?.updateLayout(scrollView)
             delegate?.pageController(self, contentScrollViewDidScroll: scrollView)
             layoutChildViewControlls()
         }
