@@ -7,13 +7,17 @@
 
 import UIKit
 
-public protocol HeadPageControllerDataSource: class {
+public protocol HeadPageViewControllerDataSource: AnyObject {
+    /// You can set up the View where the HeadPage is created. default is the View of the HeadPageView Controller.
+    ///
+    /// - Parameter pageController: HeadPageViewController
+    /// - Returns: UIView?
     func sourceViewFor(_ pageController: HeadPageViewController) -> UIView?
     func numberOfViewControllers(in pageController: HeadPageViewController) -> Int
     func pageController(_ pageController: HeadPageViewController, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController)
     func headerViewFor(_ pageController: HeadPageViewController) -> UIView?
     func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
-    func menuViewFor(_ pageController: HeadPageViewController) -> UIView?
+    func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & MenuViewProtocol)?
     func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
     func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat
 
@@ -27,7 +31,7 @@ public protocol HeadPageControllerDataSource: class {
     func contentInsetFor(_ pageController: HeadPageViewController) -> UIEdgeInsets
 }
 
-extension HeadPageControllerDataSource {
+extension HeadPageViewControllerDataSource {
     public func sourceViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
     public func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat { return 0 }
     public func originIndexFor(_ pageController: HeadPageViewController) -> Int { return 0 }
@@ -36,7 +40,7 @@ extension HeadPageControllerDataSource {
     public func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? { return nil }
 }
 
-public protocol HeadPageControllerDelegate: class {
+public protocol HeadPageViewControllerDelegate: AnyObject {
     
     /// Any offset changes in pageController's mainScrollView
     ///
@@ -95,9 +99,10 @@ public protocol HeadPageControllerDelegate: class {
     ///   - isAdsorption: is adsorption
     func pageController(_ pageController: HeadPageViewController, menuView isAdsorption: Bool)
     
+    func pageController(_ pageController: HeadPageViewController, menuView: MenuView, didSelectedItemAt index: Int)
 }
 
-extension HeadPageControllerDelegate {
+extension HeadPageViewControllerDelegate {
     public func pageController(_ pageController: HeadPageViewController, mainScrollViewDidScroll scrollView: UIScrollView) { }
     public func pageController(_ pageController: HeadPageViewController, contentScrollViewDidEndScroll scrollView: UIScrollView) { }
     public func pageController(_ pageController: HeadPageViewController, contentScrollViewDidScroll scrollView: UIScrollView) { }
@@ -105,4 +110,5 @@ extension HeadPageControllerDelegate {
     public func pageController(_ pageController: HeadPageViewController, willDisplay viewController: (UIViewController & HeadPageChildViewController), forItemAt index: Int) { }
     public func pageController(_ pageController: HeadPageViewController, didDisplay viewController: (UIViewController & HeadPageChildViewController), forItemAt index: Int) { }
     public func pageController(_ pageController: HeadPageViewController, menuView isAdsorption: Bool) { }
+    public func pageController(_ pageController: HeadPageViewController, menuView: MenuView, didSelectedItemAt index: Int) { }
 }

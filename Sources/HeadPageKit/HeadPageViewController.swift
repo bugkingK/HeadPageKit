@@ -45,6 +45,8 @@ open class HeadPageViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    internal var menuView: (UIView & MenuViewProtocol)?
 
     private var contentScrollViewConstraint: NSLayoutConstraint?
     private var menuViewConstraint: NSLayoutConstraint?
@@ -65,18 +67,23 @@ open class HeadPageViewController: UIViewController {
     internal var isAdsorption: Bool = false
 
     private let memoryCache = NSCache<NSString, UIViewController>()
-    public weak var dataSource: HeadPageControllerDataSource?
-    public weak var delegate: HeadPageControllerDelegate?
+    public weak var dataSource: HeadPageViewControllerDataSource? {
+        didSet { loadData(isUpdated: false) }
+    }
+    public weak var delegate: HeadPageViewControllerDelegate?
 
     open override var shouldAutomaticallyForwardAppearanceMethods: Bool {
         return false
     }
 
-    open override func viewDidLoad() {
-        super.viewDidLoad()
-
+    func loadData(isUpdated: Bool) {
         obtainDataSource()
-        setupOriginContent()
+        if isUpdated {
+            updateOriginContent()
+        } else {
+            setupOriginContent()
+        }
+        
         setupDataSource()
         view.layoutIfNeeded()
         if originIndex > 0 {
@@ -116,7 +123,11 @@ open class HeadPageViewController: UIViewController {
             childControllerCount = value
         }
 
-        sillValue = headerViewHeight - menuViewPinHeight
+        if headerViewHeight >= menuViewPinHeight {
+            sillValue = headerViewHeight - menuViewPinHeight
+        } else {
+            fatalError("The height of the headerView must be greater than the height of the menuView Pin.")
+        }
         countArray = Array(stride(from: 0, to: childControllerCount, by: 1))
     }
 
@@ -149,7 +160,7 @@ open class HeadPageViewController: UIViewController {
         mainScrollView.addSubview(headerContentView)
         headerContentView.translatesAutoresizingMaskIntoConstraints = false
 
-        if headerViewHeight > 0 {
+//        if headerViewHeight > 0 {
             let headerContentViewHeight = headerContentView.heightAnchor.constraint(equalToConstant: headerViewHeight)
             headerViewConstraint = headerContentViewHeight
             NSLayoutConstraint.activate([
@@ -158,7 +169,7 @@ open class HeadPageViewController: UIViewController {
                 headerContentView.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
                 headerContentViewHeight,
             ])
-        }
+//        }
 
         mainScrollView.addSubview(menuContentView)
         menuContentView.translatesAutoresizingMaskIntoConstraints = false
@@ -249,7 +260,7 @@ open class HeadPageViewController: UIViewController {
     internal func clearMemoryCache() {
         countArray.forEach { (index) in
             let viewController = memoryCache[index] as? (UIViewController & HeadPageChildViewController)
-            let scrollView = viewController?.headPageChildScrollView()
+            let scrollView = viewController?.childScrollView
             scrollView?.am_originOffset = nil
         }
         memoryCache.removeAllObjects()
@@ -268,7 +279,9 @@ open class HeadPageViewController: UIViewController {
             headerView.topAnchor.constraint(equalTo: headerContentView.topAnchor)
             ])
 
-        let menuView = dataSource?.menuViewFor(self) ?? .init()
+        let menuView = dataSource?.menuViewFor(self) ?? EmptyMenuView()
+        menuView.delegate = self
+        self.menuView = menuView
         menuContentView.addSubview(menuView)
         menuView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -327,13 +340,14 @@ open class HeadPageViewController: UIViewController {
         targetViewController.view.layoutSubviews()
         containView.viewController = targetViewController
 
-        let scrollView = targetViewController.headPageChildScrollView()
+        let scrollView = targetViewController.childScrollView
         scrollView.am_originOffset = scrollView.contentOffset
 
-        if mainScrollView.contentOffset.y < sillValue {
+        if mainScrollView.contentOffset.y <= sillValue {
             scrollView.contentOffset = scrollView.am_originOffset ?? .zero
-            scrollView.am_isCanScroll = false
-            mainScrollView.am_isCanScroll = true
+            let isCanScroll = sillValue == 0
+            scrollView.am_isCanScroll = isCanScroll
+            mainScrollView.am_isCanScroll = !isCanScroll
         }
     }
 
@@ -387,7 +401,7 @@ open class HeadPageViewController: UIViewController {
         }
         let containView = containViews[index]
         currentViewController = containView.viewController
-        currentChildScrollView = currentViewController?.headPageChildScrollView()
+        currentChildScrollView = currentViewController?.childScrollView
         currentIndex = index
 
         childScrollViewObservation?.invalidate()
@@ -400,6 +414,7 @@ open class HeadPageViewController: UIViewController {
         childScrollViewObservation = keyValueObservation
 
         if let viewController = containView.viewController {
+            menuView?.didDisplay(true)
             delegate?.pageController(self, didDisplay: viewController, forItemAt: index)
         }
     }
@@ -408,7 +423,7 @@ open class HeadPageViewController: UIViewController {
     public func allScrollViewScrollToTop() {
         containViews.forEach {
             let vc = $0.viewController
-            let scrollView = vc?.headPageChildScrollView()
+            let scrollView = vc?.childScrollView
             scrollView?.contentOffset = .zero
         }
 
@@ -417,3 +432,9 @@ open class HeadPageViewController: UIViewController {
 }
 
 
+extension HeadPageViewController: MenuViewDelegate {
+    public func menuView(_ menuView: MenuView, didSelectedItemAt index: Int) {
+        setSelect(index: index, animation: true)
+        delegate?.pageController(self, menuView: menuView, didSelectedItemAt: index)
+    }
+}
