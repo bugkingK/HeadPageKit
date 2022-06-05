@@ -9,6 +9,7 @@ import UIKit
 
 class EmptyMenuView: UIView, MenuViewProtocol {
     public weak var delegate: MenuViewDelegate?
+    var titles: [String] = []
     
     func contentScrollViewDidScroll(_ scrollView: UIScrollView) { }
     func didDisplay(_ animation: Bool) { }

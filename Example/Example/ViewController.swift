@@ -10,10 +10,10 @@ import HeadPageKit
 
 class ViewController: HeadPageViewController {
     
-    private let controllers: [ChildViewController] = [
-        .createInstance(bg: .red),
-        .createInstance(bg: .blue),
-        .createInstance(bg: .green),
+    private let models: [(title: String, controller: ChildViewController)] = [
+        ("하나", .createInstance(bg: .red)),
+        ("둘", .createInstance(bg: .blue)),
+        ("셋", .createInstance(bg: .green)),
     ]
     
     let menuView: MenuView = .init(parts:
@@ -23,16 +23,15 @@ class ViewController: HeadPageViewController {
         .selectedTextFont(UIFont.boldSystemFont(ofSize: 17)),
         .switchStyle(.line),
         .itemSpace(32),
+        .contentInset(UIEdgeInsets(top: 0, left: 28, bottom: 0, right: 28)),
         .sliderStyle(.init(parts: .height(2.0), .position(.bottom), .extraWidth(16.0)))
     )
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        menuView.titles = ["하나", "둘", "셋"]
-        menuView.delegate = self
-        menuView.contentInset = UIEdgeInsets(top: 0, left: 28, bottom: 0, right: 28)
         dataSource = self
+        delegate = self
     }
 
 }
@@ -40,15 +39,19 @@ class ViewController: HeadPageViewController {
 extension ViewController: HeadPageViewControllerDataSource {
     
     func numberOfViewControllers(in pageController: HeadPageViewController) -> Int {
-        return controllers.count
+        return models.count
     }
     
     func pageController(_ pageController: HeadPageViewController, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController) {
-        return controllers[index]
+        return models[index].controller
     }
 
     func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & MenuViewProtocol)? {
         return menuView
+    }
+    
+    func menuViewTitleFor(_ pageController: HeadPageViewController) -> [String] {
+        return models.map { $0.title }
     }
 
     func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? {
@@ -70,3 +73,9 @@ extension ViewController: HeadPageViewControllerDataSource {
     }
 }
 
+extension ViewController: HeadPageViewControllerDelegate {
+    
+    func pageController(_ pageController: HeadPageViewController, menuView: MenuView, didSelectedItemAt index: Int) {
+        print(index)
+    }
+}
