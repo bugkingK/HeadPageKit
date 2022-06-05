@@ -18,6 +18,7 @@ public protocol HeadPageViewControllerDataSource: AnyObject {
     func headerViewFor(_ pageController: HeadPageViewController) -> UIView?
     func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
     func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & MenuViewProtocol)?
+    func menuViewTitleFor(_ pageController: HeadPageViewController) -> [String]
     func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat?
     func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat
 
@@ -38,6 +39,7 @@ extension HeadPageViewControllerDataSource {
     public func contentInsetFor(_ pageController: HeadPageViewController) -> UIEdgeInsets { return .zero }
     public func headerViewFor(_ pageController: HeadPageViewController) -> UIView? { return nil }
     public func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? { return nil }
+    public func menuViewTitleFor(_ pageController: HeadPageViewController) -> [String] { return [] }
 }
 
 public protocol HeadPageViewControllerDelegate: AnyObject {

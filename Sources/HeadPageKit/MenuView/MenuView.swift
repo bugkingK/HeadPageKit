@@ -26,6 +26,7 @@ public enum MenuSwitchStyle {
 
 public protocol MenuViewProtocol: AnyObject {
     var delegate: MenuViewDelegate? { get set }
+    var titles: [String] { get set }
     /// Any offset changes in pageController's contentScrollView
     func contentScrollViewDidScroll(_ scrollView: UIScrollView)
     /// Method call when pageController did display

@@ -122,6 +122,14 @@ open class HeadPageViewController: UIViewController {
         if let value = dataSource?.numberOfViewControllers(in: self) {
             childControllerCount = value
         }
+        
+        if let value = dataSource?.menuViewFor(self) {
+            menuView = value
+        }
+        
+        if let value = dataSource?.menuViewTitleFor(self) {
+            menuView?.titles = value
+        }
 
         if headerViewHeight >= menuViewPinHeight {
             sillValue = headerViewHeight - menuViewPinHeight
