@@ -12,7 +12,6 @@ public protocol HeadPageViewControllerDataSource: AnyObject {
     ///
     /// - Parameter pageView: HeadPageView
     /// - Returns: UIView?
-    func sourceViewFor(_ pageView: HeadPageView) -> UIView?
     func numberOfViewControllers(in pageView: HeadPageView) -> Int
     func pageView(_ pageView: HeadPageView, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController)
     func headerViewFor(_ pageView: HeadPageView) -> UIView?
@@ -33,7 +32,6 @@ public protocol HeadPageViewControllerDataSource: AnyObject {
 }
 
 extension HeadPageViewControllerDataSource {
-    public func sourceViewFor(_ pageView: HeadPageView) -> UIView? { return nil }
     public func menuViewPinHeightFor(_ pageView: HeadPageView) -> CGFloat { return 0 }
     public func originIndexFor(_ pageView: HeadPageView) -> Int { return 0 }
     public func contentInsetFor(_ pageView: HeadPageView) -> UIEdgeInsets { return .zero }
