@@ -1,5 +1,5 @@
 //
-//  HeadPageViewController.swift
+//  HeadPageView.swift
 //
 //
 //  Created by Kimun Kwon on 2020/10/26.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class HeadPageViewController: UIView {
+public class HeadPageView: UIView {
     public private(set) var currentViewController: (UIViewController & HeadPageChildViewController)?
     public private(set) var currentIndex = 0
     internal var originIndex = 0
@@ -302,12 +302,12 @@ public class HeadPageViewController: UIView {
         }
         
         let cachedViewContoller = memoryCache[index] as? (UIViewController & HeadPageChildViewController)
-        let viewController = cachedViewContoller != nil ? cachedViewContoller : dataSource?.pageController(self, viewControllerAt: index)
+        let viewController = cachedViewContoller != nil ? cachedViewContoller : dataSource?.pageView(self, viewControllerAt: index)
         
         guard let targetViewController = viewController else {
             return
         }
-        delegate?.pageController(self, willDisplay: targetViewController, forItemAt: index)
+        delegate?.pageView(self, willDisplay: targetViewController, forItemAt: index)
         
         containView.addSubview(targetViewController.view)
         targetViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -346,7 +346,7 @@ public class HeadPageViewController: UIView {
         }
         viewController.clearFromParent()
         if memoryCache[index] == nil {
-            delegate?.pageController(self, willCache: viewController, forItemAt: index)
+            delegate?.pageView(self, willCache: viewController, forItemAt: index)
             memoryCache[index] = viewController
         }
     }
@@ -368,7 +368,7 @@ public class HeadPageViewController: UIView {
         let offsetX = scrollView.contentOffset.x
         let index = Int(offsetX / scrollViewWidth)
         didDisplayViewController(at: index)
-        delegate?.pageController(self, contentScrollViewDidEndScroll: contentScrollView)
+        delegate?.pageView(self, contentScrollViewDidEndScroll: contentScrollView)
     }
     
     internal func didDisplayViewController(at index: Int) {
@@ -394,7 +394,7 @@ public class HeadPageViewController: UIView {
         
         if let viewController = containView.viewController {
             menuView?.didDisplay(true)
-            delegate?.pageController(self, didDisplay: viewController, forItemAt: index)
+            delegate?.pageView(self, didDisplay: viewController, forItemAt: index)
         }
     }
     
@@ -411,9 +411,9 @@ public class HeadPageViewController: UIView {
 }
 
 
-extension HeadPageViewController: MenuViewDelegate {
+extension HeadPageView: MenuViewDelegate {
     public func menuView(_ menuView: MenuView, didSelectedItemAt index: Int) {
         setSelect(index: index, animation: true)
-        delegate?.pageController(self, menuView: menuView, didSelectedItemAt: index)
+        delegate?.pageView(self, menuView: menuView, didSelectedItemAt: index)
     }
 }

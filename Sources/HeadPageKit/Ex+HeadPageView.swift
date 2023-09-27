@@ -1,5 +1,5 @@
 //
-//  Ex+HeadPageViewController.swift
+//  Ex+HeadPageView.swift
 //
 //
 //  Created by Kimun Kwon on 2020/10/26.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension HeadPageViewController {
+extension HeadPageView {
     public func updateHeaderViewHeight(animated: Bool = false,
                                        duration: TimeInterval = 0.25,
                                        completion: ((Bool) -> Void)? = nil) {
@@ -34,13 +34,13 @@ extension HeadPageViewController {
             UIView.animate(withDuration: duration, animations: {
                 self.mainScrollView.layoutIfNeeded()
                 if manualHandel {
-                    self.delegate?.pageController(self, menuView: self.isAdsorption)
+                    self.delegate?.pageView(self, menuView: self.isAdsorption)
                 }
             }) { (finish) in
                 completion?(finish)
             }
         } else {
-            delegate?.pageController(self, menuView: isAdsorption)
+            delegate?.pageView(self, menuView: isAdsorption)
             completion?(true)
         }
     }
@@ -63,12 +63,12 @@ extension HeadPageViewController {
 }
 
 
-extension HeadPageViewController: UIScrollViewDelegate {
+extension HeadPageView: UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         if scrollView == mainScrollView {
-            delegate?.pageController(self, mainScrollViewDidScroll: scrollView)
+            delegate?.pageView(self, mainScrollViewDidScroll: scrollView)
             let offsetY = scrollView.contentOffset.y
             if offsetY >= sillValue {
                 let isSillValueZero = sillValue == 0
@@ -82,19 +82,19 @@ extension HeadPageViewController: UIScrollViewDelegate {
                 }
                 
                 isAdsorption = !scrollView.am_isCanScroll
-                delegate?.pageController(self, menuView: isAdsorption)
+                delegate?.pageView(self, menuView: isAdsorption)
             } else {
                 isAdsorption = scrollView.am_isCanScroll == false
                 if isAdsorption {
-                    delegate?.pageController(self, menuView: isAdsorption)
+                    delegate?.pageView(self, menuView: isAdsorption)
                     scrollView.contentOffset = CGPoint(x: 0, y: sillValue)
                 } else {
-                    delegate?.pageController(self, menuView: isAdsorption)
+                    delegate?.pageView(self, menuView: isAdsorption)
                 }
             }
         } else {
             menuView?.contentScrollViewDidScroll(scrollView)
-            delegate?.pageController(self, contentScrollViewDidScroll: scrollView)
+            delegate?.pageView(self, contentScrollViewDidScroll: scrollView)
             layoutChildViewControlls()
         }
     }
@@ -138,7 +138,7 @@ extension HeadPageViewController: UIScrollViewDelegate {
     
 }
 
-extension HeadPageViewController {
+extension HeadPageView {
     internal func childScrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.am_isCanScroll == false {
             scrollView.contentOffset = scrollView.am_originOffset ?? .zero

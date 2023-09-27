@@ -9,7 +9,7 @@ import UIKit
 import HeadPageKit
 
 class ViewController: UIViewController {
-    @IBOutlet private weak var pageView: HeadPageViewController!
+    @IBOutlet private weak var pageView: HeadPageView!
     
     private let models: [(title: String, controller: ChildViewController)] = [
         ("하나", .createInstance(bg: .red)),
@@ -39,44 +39,44 @@ class ViewController: UIViewController {
 
 extension ViewController: HeadPageViewControllerDataSource {
     
-    func numberOfViewControllers(in pageController: HeadPageViewController) -> Int {
+    func numberOfViewControllers(in pageView: HeadPageView) -> Int {
         return models.count
     }
     
-    func pageController(_ pageController: HeadPageViewController, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController) {
+    func pageView(_ pageView: HeadPageView, viewControllerAt index: Int) -> (UIViewController & HeadPageChildViewController) {
         return models[index].controller
     }
 
-    func menuViewFor(_ pageController: HeadPageViewController) -> (UIView & MenuViewProtocol)? {
+    func menuViewFor(_ pageView: HeadPageView) -> (UIView & MenuViewProtocol)? {
         return menuView
     }
     
-    func menuViewTitleFor(_ pageController: HeadPageViewController) -> [String] {
+    func menuViewTitleFor(_ pageView: HeadPageView) -> [String] {
         return models.map { $0.title }
     }
 
-    func menuViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? {
+    func menuViewHeightFor(_ pageView: HeadPageView) -> CGFloat? {
         return 50
     }
     
-    func menuViewPinHeightFor(_ pageController: HeadPageViewController) -> CGFloat {
+    func menuViewPinHeightFor(_ pageView: HeadPageView) -> CGFloat {
         return 0
     }
     
-    func headerViewFor(_ pageController: HeadPageViewController) -> UIView? {
+    func headerViewFor(_ pageView: HeadPageView) -> UIView? {
         let view = UIView()
         view.backgroundColor = .brown
         return view
     }
     
-    func headerViewHeightFor(_ pageController: HeadPageViewController) -> CGFloat? {
+    func headerViewHeightFor(_ pageView: HeadPageView) -> CGFloat? {
         return 20
     }
 }
 
 extension ViewController: HeadPageViewControllerDelegate {
     
-    func pageController(_ pageController: HeadPageViewController, menuView: MenuView, didSelectedItemAt index: Int) {
+    func pageView(_ pageView: HeadPageView, menuView: MenuView, didSelectedItemAt index: Int) {
         print(index)
     }
 }
