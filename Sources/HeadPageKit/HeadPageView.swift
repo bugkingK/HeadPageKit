@@ -16,6 +16,7 @@ public class HeadPageView: UIView {
         let scrollView = HeadPageMainScrollView()
         scrollView.delegate = self
         scrollView.am_isCanScroll = true
+        scrollView.backgroundColor = .darkGray
         return scrollView
     }()
     
@@ -50,6 +51,7 @@ public class HeadPageView: UIView {
     }()
     
     internal var menuView: (UIView & MenuViewProtocol)?
+    public var layout = BottomSheetLayout()
     
     private var contentScrollViewConstraint: NSLayoutConstraint?
     private var menuViewConstraint: NSLayoutConstraint?
@@ -88,6 +90,7 @@ public class HeadPageView: UIView {
         }
         
         setupDataSource()
+        setupGesture()
         layoutIfNeeded()
         if originIndex > 0 {
             setSelect(index: originIndex, animation: false)
@@ -408,12 +411,94 @@ public class HeadPageView: UIView {
         
         mainScrollView.contentOffset = .zero
     }
+    
+    public func move(to position: BottomSheetPosition) {
+        let height = frame.height - layout.getHeight(position)
+        if height >= 0 {
+            move(to: height)
+        } else {
+            move(to: layout.getHeight(.tip))
+        }
+    }
+    
+    public func move(to height: CGFloat) {
+        mainScrollViewConstraints[0].constant = height
+        
+        UIView.animateWithSpring(
+            animation: {
+                self.layoutIfNeeded()
+            }
+        )
+    }
 }
-
 
 extension HeadPageView: MenuViewDelegate {
     public func menuView(_ menuView: MenuView, didSelectedItemAt index: Int) {
         setSelect(index: index, animation: true)
         delegate?.pageView(self, menuView: menuView, didSelectedItemAt: index)
     }
+}
+
+extension UIView {
+    
+    static func animateWithSpring(animation: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
+        UIView.animate(withDuration: 0.45,
+                       delay: 0,
+                       usingSpringWithDamping: 0.8,
+                       initialSpringVelocity: 0.8,
+                       options: [.allowUserInteraction],
+                       animations: animation,
+                       completion: completion)
+    }
+}
+
+public struct BottomSheetLayout {
+    public private(set) var full: CGFloat
+    public private(set) var half: CGFloat
+    public private(set) var tip: CGFloat
+    
+    public init(full: BottomSheetAnchoring = .absolute(600),
+                half: BottomSheetAnchoring = .absolute(400),
+                tip: BottomSheetAnchoring = .absolute(200)) {
+        self.full = full.height
+        self.half = half.height
+        self.tip = tip.height
+    }
+    
+    func getHeight(_ position: BottomSheetPosition) -> CGFloat {
+        switch position {
+        case .full: return full
+        case .half: return half
+        case .tip: return tip
+        }
+    }
+}
+
+public enum BottomSheetPosition {
+    case full, half, tip
+}
+
+public enum BottomSheetAnchoring {
+    case absolute(CGFloat)
+    
+    var height: CGFloat {
+        switch self {
+        case .absolute(let h): return h
+        }
+    }
+}
+
+extension HeadPageView {
+    private func setupGesture() {
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(didPanBottomSheet))
+        addGestureRecognizer(panGestureRecognizer)
+    }
+    
+    @objc private func didPanBottomSheet(_ sender: UIPanGestureRecognizer) {
+        let translation = sender.translation(in: self)
+        let panVelocity = sender.velocity(in: self).y
+        mainScrollViewConstraints.first?.constant += translation.y
+        sender.setTranslation(.zero, in: self)
+    }
+    
 }

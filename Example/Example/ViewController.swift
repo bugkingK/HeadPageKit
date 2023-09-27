@@ -33,6 +33,10 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
         pageView.dataSource = self
         pageView.delegate = self
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            self.pageView.move(to: .tip)
+        })
+        
     }
 
 }
