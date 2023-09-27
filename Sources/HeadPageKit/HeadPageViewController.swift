@@ -7,10 +7,7 @@
 
 import UIKit
 
-open class HeadPageViewController: UIViewController {
-    
-    @IBOutlet private(set) weak var sourceView: UIView?
-    
+public class HeadPageViewController: UIView {
     public private(set) var currentViewController: (UIViewController & HeadPageChildViewController)?
     public private(set) var currentIndex = 0
     internal var originIndex = 0
@@ -31,9 +28,6 @@ open class HeadPageViewController: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        if let popGesture = navigationController?.interactivePopGestureRecognizer {
-            scrollView.panGestureRecognizer.require(toFail: popGesture)
-        }
         return scrollView
     }()
     
@@ -85,10 +79,6 @@ open class HeadPageViewController: UIViewController {
     }
     public weak var delegate: HeadPageViewControllerDelegate?
     
-    open override var shouldAutomaticallyForwardAppearanceMethods: Bool {
-        return false
-    }
-    
     func loadData(isUpdated: Bool) {
         obtainDataSource()
         if isUpdated {
@@ -98,7 +88,7 @@ open class HeadPageViewController: UIViewController {
         }
         
         setupDataSource()
-        view.layoutIfNeeded()
+        layoutIfNeeded()
         if originIndex > 0 {
             setSelect(index: originIndex, animation: false)
         } else {
@@ -112,10 +102,6 @@ open class HeadPageViewController: UIViewController {
     }
     
     internal func obtainDataSource() {
-        if let value = dataSource?.sourceViewFor(self) {
-            sourceView = value
-        }
-        
         if let value = dataSource?.originIndexFor(self) {
             originIndex = value
         }
@@ -153,23 +139,17 @@ open class HeadPageViewController: UIViewController {
     }
     
     private func setupOriginContent() {
-        guard let sourceView = self.sourceView == nil ? view : self.sourceView else { return }
         mainScrollView.headerViewHeight = headerViewHeight
         mainScrollView.menuViewHeight = menuViewHeight
         mainScrollView.contentInsetAdjustmentBehavior = .never
         
-        var mainScrollViewTop: NSLayoutYAxisAnchor = view.safeAreaLayoutGuide.topAnchor
-        if sourceView != view {
-            mainScrollViewTop = sourceView.topAnchor
-        }
-        
-        sourceView.addSubview(mainScrollView)
+        addSubview(mainScrollView)
         let contentInset = dataSource?.contentInsetFor(self) ?? .zero
         let constraints = [
-            mainScrollView.topAnchor.constraint(equalTo: mainScrollViewTop, constant: contentInset.top),
-            mainScrollView.leadingAnchor.constraint(equalTo: sourceView.leadingAnchor, constant: contentInset.left),
-            mainScrollView.bottomAnchor.constraint(equalTo: sourceView.bottomAnchor, constant: -contentInset.bottom),
-            mainScrollView.trailingAnchor.constraint(equalTo: sourceView.trailingAnchor, constant: -contentInset.right)
+            mainScrollView.topAnchor.constraint(equalTo: topAnchor, constant: contentInset.top),
+            mainScrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: contentInset.left),
+            mainScrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -contentInset.bottom),
+            mainScrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -contentInset.right)
         ]
         mainScrollViewConstraints = constraints
         NSLayoutConstraint.activate(constraints)
@@ -329,8 +309,6 @@ open class HeadPageViewController: UIViewController {
         }
         delegate?.pageController(self, willDisplay: targetViewController, forItemAt: index)
         
-        addChild(targetViewController)
-        targetViewController.beginAppearanceTransition(true, animated: false)
         containView.addSubview(targetViewController.view)
         targetViewController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -339,9 +317,6 @@ open class HeadPageViewController: UIViewController {
             targetViewController.view.bottomAnchor.constraint(equalTo: containView.bottomAnchor),
             targetViewController.view.topAnchor.constraint(equalTo: containView.topAnchor),
         ])
-        targetViewController.endAppearanceTransition()
-        targetViewController.didMove(toParent: self)
-        targetViewController.view.layoutSubviews()
         containView.viewController = targetViewController
         
         let scrollView = targetViewController.childScrollView
@@ -379,7 +354,7 @@ open class HeadPageViewController: UIViewController {
     internal func layoutChildViewControlls() {
         countArray.forEach { (index) in
             let containView = containViews[index]
-            let isDisplayingInScreen = containView.displayingIn(view: view, containView: contentScrollView)
+            let isDisplayingInScreen = containView.displayingIn(view: self, containView: contentScrollView)
             isDisplayingInScreen ? showChildViewContoller(at: index) : removeChildViewController(at: index)
         }
     }

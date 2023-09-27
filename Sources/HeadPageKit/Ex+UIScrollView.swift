@@ -8,8 +8,8 @@
 import UIKit
 
 private struct AssociatedKeys {
-    static var AMIsCanScroll = "AMIsCanScroll"
-    static var AMOriginOffset = "AMOriginOffset"
+    static var AMIsCanScroll: Int = 202010261
+    static var AMOriginOffset: Int = 202010262
 }
 
 extension UIScrollView {

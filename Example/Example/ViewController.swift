@@ -8,7 +8,8 @@
 import UIKit
 import HeadPageKit
 
-class ViewController: HeadPageViewController {
+class ViewController: UIViewController {
+    @IBOutlet private weak var pageView: HeadPageViewController!
     
     private let models: [(title: String, controller: ChildViewController)] = [
         ("하나", .createInstance(bg: .red)),
@@ -30,8 +31,8 @@ class ViewController: HeadPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        dataSource = self
-        delegate = self
+        pageView.dataSource = self
+        pageView.delegate = self
     }
 
 }

@@ -9,10 +9,6 @@ import UIKit
 
 extension UIViewController {
     
-    public var amPageViewContoller: HeadPageViewController? {
-        return parent as? HeadPageViewController
-    }
-    
     func clearFromParent() {
         willMove(toParent: nil)
         beginAppearanceTransition(false, animated: false)
